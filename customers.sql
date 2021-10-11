@@ -1,11 +1,21 @@
-select 
-    o.customer_id, 
-    c.name,
-    c.email,
-    min(o.created_at) as first_order_at, 
-    count(o.id) as number_of_orders
-from analytics-engineers-club.coffee_shop.orders o
-join analytics-engineers-club.coffee_shop.customers c on o.customer_id = c.id
+with customer_orders as (
+    select
+        customer_id, 
+        min(created_at) as first_order_at,
+        count(distinct id) as number_orders,
+        max(created_at) as last_order_at
+    from `analytics-engineers-club.coffee_shop.orders`
+    group by 1
+)
 
-group by 1,2,3
-order by first_order_at;
+select
+    customers.id as customer_id,
+    customers.name,
+    customers.email,
+    customer_orders.first_order_at,
+    customer_orders.number_orders,
+    customer_orders.last_order_at
+from `analytics-engineers-club.coffee_shop.customers` as customers
+left join customer_orders
+  on customers.id = customer_orders.customer_id 
+order by first_order_at asc
