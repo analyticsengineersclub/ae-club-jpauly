@@ -19,3 +19,5 @@ from `analytics-engineers-club.coffee_shop.customers` as customers
 left join customer_orders
   on customers.id = customer_orders.customer_id 
 order by first_order_at asc
+
+-- adding comment to create a merge conflict -svm
